@@ -6,23 +6,27 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <script src="app.js"></script>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <title>Library</title>
 </head>
 <body>
-  <h1>My library</h1>
-  <table id="library">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Pages</th>
-        <th>Status</th>
-        <th>Remove</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
-  <button id="newbook">New book</button>
+  <div class="container">
+    <h1>My library</h1>
+    <table id="library">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Pages</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <button id="new-book" class="btn btn-primary">New book</button>
+    <button id="close-form" class="btn btn-primary">Close form</button>
+  </div>
 </body>
 </html>

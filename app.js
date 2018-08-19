@@ -39,7 +39,7 @@ let renderBook = function(book, index){
       <td>${book.pages}</td>
       <td>${book.read}</td>
       <td>
-        <button>Remove</button>
+        <button class="btn btn-sm btn-primary">Remove</button>
       </td>
     </tr>
   `
@@ -61,21 +61,47 @@ let createForm = function() {
 
   let form = document.createElement('form')
   form.innerHTML = `
-  <label for="title">Name</label>
-  <input type="text" id="title" name="title">
-  <br>
-  <label for="author">Author</label>
-  <input type="text" id="author" name="author">
-  <br>
-  <label for="pages">Number of pages</label>
-  <input type="number" id="pages" name="pages">
-  <br>
-  <label for="status">Status</label>
-  <input type="checkbox" id="status" name="status">
-  <br>
-  <button>Submit</button>
+  <div class="form-group">
+    <label for="title">Name</label>
+    <input type="text" id="title" name="title" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="author">Author</label>
+    <input type="text" id="author" name="author" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="pages">Number of pages</label>
+    <input type="number" id="pages" name="pages" class="form-control">
+  </div>
+  <div class="form-group form-check"">
+    <input type="checkbox" id="read" name="read" class="form-check-input">
+    <label for="read">Status</label>
+  </div>
+  <button id="submit-btn" class="btn btn-primary">Submit</button>
   `
-  document.querySelector('body').appendChild(form)
+  document.querySelector('.container').appendChild(form)
+  document.querySelector('#submit-btn').addEventListener('click',(event) => {
+    event.preventDefault()
+    let formData = new FormData(document.querySelector('form'))
+    let book = createBookObject(formData)
+    myLibrary.push(book)
+    render(myLibrary)
+    form.reset()
+  })
+}
+
+let removeForm = function(){
+  form = document.querySelector('form')
+  form.parentNode.removeChild(form)
+}
+
+let createBookObject = function(formData) {
+  let book = new Book();
+  for(var pair of formData.entries()) {
+    book[pair[0]] = pair[1]
+  }
+  (book.read === 'on') ? (book.read = true) : (book.read = false)
+  return book
 }
 
 let removeBook = function(event){
@@ -88,6 +114,8 @@ let removeBook = function(event){
 
 document.addEventListener('DOMContentLoaded', () => {
   render(myLibrary)
-  let button = document.querySelector('#newbook')
-  button.onclick = createForm
+  let newBook = document.querySelector('#new-book')
+  newBook.onclick = createForm
+  let closeForm = document.querySelector('#close-form')
+  closeForm.onclick = removeForm
 })
