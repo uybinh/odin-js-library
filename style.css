@@ -1,0 +1,21 @@
+body {
+  text-align: center;
+}
+
+table {
+  margin: auto;
+}
+
+th,
+td {
+  width: 150px;
+}
+
+tr :first-child {
+  width: 200px;
+}
+
+th {
+  background: rgb(99, 163, 4);
+  color: white;
+}
