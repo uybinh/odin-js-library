@@ -34,6 +34,32 @@ let renderBook = function(book){
   body.appendChild(bookElement)
 }
 
+let createForm = function() {
+  if (document.querySelector('form')) {
+    return
+  }
+
+  let form = document.createElement('form')
+  form.innerHTML = `
+  <label for="title">Name</label>
+  <input type="text" id="title" name="title">
+  <br>
+  <label for="author">Author</label>
+  <input type="text" id="author" name="author">
+  <br>
+  <label for="pages">Pages</label>
+  <input type="number" id="pages" name="pages">
+  <br>
+  <label for="status">Status</label>
+  <input type="checkbox" id="status" name="status">
+  <br>
+  <button>Submit</button>
+  `
+  document.querySelector('body').appendChild(form)
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   render(myLibrary)
+  let button = document.querySelector('button')
+  button.onclick = createForm
 })
