@@ -164,7 +164,7 @@ let addBookToLibrary = function(library, formData){
 
 let removeBookWithIndex = function(index){
   let myLibrary = getLibraryFromStorage()
-  let book = document.querySelector(`tr[data-book-index='${index}'`)
+  let book = document.querySelector(`tr[data-book-index='${index}']`)
   book.parentNode.removeChild(book)
   myLibrary.splice(index,1)
   saveLibraryToStorage(myLibrary)
