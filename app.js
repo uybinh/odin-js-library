@@ -5,10 +5,19 @@ function Book(title, author, pages, read) {
   this.read = read
 }
 
-Book.prototype.info = function(){
-  let info = `${this.title} by ${this.author}, ${this.pages} pages, `
-  info += (this.read ? 'have read.' : 'not read yet.')
-  return info
+Book.prototype = {
+  constructor: Book,
+  info(){
+    let info = `${this.title} by ${this.author}, ${this.pages} pages, `
+    info += (this.read ? 'have read.' : 'not read yet.')
+    return info
+  },
+  toggle(property){
+    if (typeof this[property] === 'boolean'){
+      this[property] = !this[property]
+      return this[property]
+    }
+  }
 }
 
 let render = function(library){
