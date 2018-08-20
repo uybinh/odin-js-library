@@ -11,17 +11,15 @@ Book.prototype.info = function(){
   return info
 }
 
-let firstBook = new Book('Harry Potter', 'J.R.R. Tolkien', 235, false)
-let secondBOok = new Book('Angel & Demon', 'Dan Brown', 534, false)
-let myLibrary = [firstBook, secondBOok]
-
-
 let render = function(library){
   let tbody = document.querySelector('#library tbody')
   tbody.innerHTML = renderBooks(library)
   addRemoveEvents()
 }
 
+let renderFromStorage = function(){
+  render(getLibrary())
+}
 let addRemoveEvents = function(){
   let bookButtons = document.querySelectorAll('tbody button')
   bookButtons.forEach((button) => {
@@ -54,40 +52,58 @@ let renderBooks = function(library){
   return books
 }
 
+let newBookForm = function() {
+  return `
+<div class="form-group">
+  <label for="title">Name</label>
+  <input type="text" id="title" name="title" class="form-control">
+</div>
+<div class="form-group">
+  <label for="author">Author</label>
+  <input type="text" id="author" name="author" class="form-control">
+</div>
+<div class="form-group">
+  <label for="pages">Number of pages</label>
+  <input type="number" id="pages" name="pages" class="form-control">
+</div>
+<div class="form-group form-check"">
+  <input type="checkbox" id="read" name="read" class="form-check-input">
+  <label for="read">Status (Read/Unread)</label>
+</div>
+<button id="submit-btn" class="btn btn-primary">Submit</button>
+`
+}
+
 let createForm = function() {
   if (document.querySelector('form')) {
     return
   }
-
   let form = document.createElement('form')
-  form.innerHTML = `
-  <div class="form-group">
-    <label for="title">Name</label>
-    <input type="text" id="title" name="title" class="form-control">
-  </div>
-  <div class="form-group">
-    <label for="author">Author</label>
-    <input type="text" id="author" name="author" class="form-control">
-  </div>
-  <div class="form-group">
-    <label for="pages">Number of pages</label>
-    <input type="number" id="pages" name="pages" class="form-control">
-  </div>
-  <div class="form-group form-check"">
-    <input type="checkbox" id="read" name="read" class="form-check-input">
-    <label for="read">Status</label>
-  </div>
-  <button id="submit-btn" class="btn btn-primary">Submit</button>
-  `
-  document.querySelector('.container').appendChild(form)
+  form.innerHTML = newBookForm();
+  appendChildTo('.container', form)
   document.querySelector('#submit-btn').addEventListener('click',(event) => {
     event.preventDefault()
     let formData = new FormData(document.querySelector('form'))
-    let book = createBookObject(formData)
-    myLibrary.push(book)
+    let myLibrary = getLibrary()
+    myLibrary = addBookToLibrary(myLibrary, formData)
     render(myLibrary)
+    saveToStorage(myLibrary)
     form.reset()
   })
+}
+
+let getLibrary = function(){
+  return JSON.parse(localStorage.getItem('myLibrary'))
+}
+
+let addBookToLibrary = function(library, formData){
+  let book = createBookObject(formData)
+  library.push(book)
+  return library
+}
+
+let appendChildTo = function(selector, element){
+  document.querySelector(selector).appendChild(element)
 }
 
 let removeForm = function(){
@@ -105,15 +121,20 @@ let createBookObject = function(formData) {
 }
 
 let removeBook = function(event){
+  let myLibrary = getLibrary()
   let book = event.target.parentNode.parentNode
   book.parentNode.removeChild(book)
   myLibrary.splice(book.dataset.bookIndex,1)
   render(myLibrary)
-  console.log(myLibrary)
+  saveToStorage(myLibrary)
+}
+
+let saveToStorage = function(library){
+  localStorage.setItem('myLibrary', JSON.stringify(library))
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  render(myLibrary)
+  renderFromStorage()
   let newBook = document.querySelector('#new-book')
   newBook.onclick = createForm
   let closeForm = document.querySelector('#close-form')
