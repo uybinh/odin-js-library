@@ -87,7 +87,7 @@ let renderBooks = function(library){
 let newBookForm = function() {
   return `
 <div class="form-group">
-  <label for="title">Name</label>
+  <label for="title">Title</label>
   <input type="text" id="title" name="title" class="form-control" required>
 </div>
 <div class="form-group">
@@ -116,21 +116,39 @@ let createForm = function() {
   appendChildTo('.container', form)
   document.querySelector('#submit-btn').addEventListener('click',(event) => {
     event.preventDefault()
-    let formData = new FormData(document.querySelector('form'))
-    let myLibrary = getLibraryFromStorage()
-    myLibrary = addBookToLibrary(myLibrary, formData)
-    saveLibraryToStorage(myLibrary)
-    renderFromStorage()
+    if (validateForm(form)) { submitForm() }
     form.reset()
   })
 }
 
+let submitForm = function(){
+  let formData = new FormData(document.querySelector('form'))
+  let myLibrary = getLibraryFromStorage()
+  myLibrary = addBookToLibrary(myLibrary, formData)
+  saveLibraryToStorage(myLibrary)
+  renderFromStorage()
+}
+
+let validateForm = function(form){
+  let formData = new FormData(form)
+  let keys = ['title', 'author', 'pages']
+  let messages = ''
+  keys.forEach((key) => {
+    if (!(typeof formData.get(key) === 'string' && formData.get(key) != '')){
+      messages += `Please enter ${key}!\n`
+    }
+  })
+  if (messages.length > 0){
+    alert(messages.trim())
+    return false
+  } else {
+    return true
+  }
+}
 let removeForm = function(){
   form = document.querySelector('form')
   form.parentNode.removeChild(form)
 }
-
-
 
 let createBookObject = function(formData) {
   let book = new Book(getBookFromFormData(formData));
