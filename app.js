@@ -180,6 +180,9 @@ let getBookFromFormData = function(formData){
 }
 
 let getLibraryFromStorage = function(){
+  if (localStorage.getItem('myLibrary') === null){
+    return []
+  }
   rawLibrary = JSON.parse(localStorage.getItem('myLibrary'))
   return rawLibrary.map((book) => {
     return new Book(book)
