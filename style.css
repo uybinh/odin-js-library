@@ -1,11 +1,16 @@
 table {
-  margin: auto;
+  margin: 30px auto;
   text-align: center;
 }
 
 th,
 td {
   width: 150px;
+  padding: 5px;
+}
+
+td button.btn {
+  width: auto;
 }
 
 tr :first-child {
