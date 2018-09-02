@@ -7,55 +7,57 @@ function Book(bookinfo) {
 
 Book.prototype = {
   constructor: Book,
-  info(){
+  info() {
     let info = `${this.title} by ${this.author}, ${this.pages} pages, `
-    info += (this.read ? 'have read.' : 'not read yet.')
+    info += this.read ? "have read." : "not read yet."
     return info
   },
-  toggle(property){
-    if (typeof this[property] === 'boolean'){
+  toggle(property) {
+    if (typeof this[property] === "boolean") {
       this[property] = !this[property]
     }
     return this[property]
   }
 }
 
-let render = function(library){
-  let tbody = document.querySelector('#library tbody')
+let render = function(library) {
+  let tbody = document.querySelector("#library tbody")
   tbody.innerHTML = renderBooks(library)
   addRemoveEvents()
   addBookStatusToggleEvents()
 }
 
-let renderFromStorage = function(){
+let renderFromStorage = function() {
   render(getLibraryFromStorage())
 }
 
-let addRemoveEvents = function(){
-  let bookButtons = document.querySelectorAll('tbody button')
-  bookButtons.forEach((button) => {
+let addRemoveEvents = function() {
+  let bookButtons = document.querySelectorAll("tbody button")
+  bookButtons.forEach(button => {
     let index = button.dataset.bookIndex
-    button.onclick = function(){ removeBookWithIndex(index) }
+    button.onclick = function() {
+      removeBookWithIndex(index)
+    }
   })
 }
 
-let addBookStatusToggleEvents = function(){
-  let statusAnchors = document.querySelectorAll('.read-status')
+let addBookStatusToggleEvents = function() {
+  let statusAnchors = document.querySelectorAll(".read-status")
   let library = getLibraryFromStorage()
-  statusAnchors.forEach((a) => {
+  statusAnchors.forEach(a => {
     let index = a.dataset.bookIndex
     let book = library[index]
-    a.addEventListener('click', function(event){
+    a.addEventListener("click", function(event) {
       event.preventDefault()
-      book.toggle('read')
+      book.toggle("read")
       saveLibraryToStorage(library)
       render(library)
     })
   })
 }
 
-let renderBook = function(book, index){
-  let status = book.read ? 'Have read' : 'Not read yet'
+let renderBook = function(book, index) {
+  let status = book.read ? "Have read" : "Not read yet"
   let bookstring = `
     <tr data-book-index='${index}'>
       <td>${book.title}</td>
@@ -76,8 +78,8 @@ let renderBook = function(book, index){
   return bookstring
 }
 
-let renderBooks = function(library){
-  let books = ''
+let renderBooks = function(library) {
+  let books = ""
   library.forEach((book, index) => {
     books += renderBook(book, index)
   })
@@ -107,100 +109,105 @@ let newBookForm = function() {
 }
 
 let createForm = function() {
-  if (document.querySelector('form')) {
+  if (document.querySelector("form")) {
     return
   }
-  let form = document.createElement('form')
+  let form = document.createElement("form")
   form.name = "myForm"
-  form.innerHTML = newBookForm();
-  appendChildTo('.container', form)
-  document.querySelector('#submit-btn').addEventListener('click',(event) => {
+  form.innerHTML = newBookForm()
+  appendChildTo(".container", form)
+  document.querySelector("#submit-btn").addEventListener("click", event => {
+    // if (validateForm(form)) {
+    //   submitForm()
+    // }
+    // form.reset()
+  })
+  form.addEventListener("submit", event => {
+    submitForm()
     event.preventDefault()
-    if (validateForm(form)) { submitForm() }
-    form.reset()
   })
 }
 
-let submitForm = function(){
-  let formData = new FormData(document.querySelector('form'))
+let submitForm = function() {
+  let formData = new FormData(document.querySelector("form"))
   let myLibrary = getLibraryFromStorage()
   myLibrary = addBookToLibrary(myLibrary, formData)
   saveLibraryToStorage(myLibrary)
   renderFromStorage()
 }
 
-let validateForm = function(form){
+let validateForm = function(form) {
   let formData = new FormData(form)
-  let keys = ['title', 'author', 'pages']
-  let messages = ''
-  keys.forEach((key) => {
-    if (!(typeof formData.get(key) === 'string' && formData.get(key) != '')){
+  let keys = ["title", "author", "pages"]
+  let messages = ""
+  keys.forEach(key => {
+    if (!(typeof formData.get(key) === "string" && formData.get(key) != "")) {
       messages += `Please enter ${key}!\n`
     }
   })
-  if (messages.length > 0){
+  if (messages.length > 0) {
     alert(messages.trim())
     return false
   } else {
     return true
   }
 }
-let removeForm = function(){
-  form = document.querySelector('form')
+let removeForm = function() {
+  form = document.querySelector("form")
   form.parentNode.removeChild(form)
 }
 
 let createBookObject = function(formData) {
-  let book = new Book(getBookFromFormData(formData));
-  (book.read === 'on') ? (book.read = true) : (book.read = false)
+  let book = new Book(getBookFromFormData(formData))
+  book.read === "on" ? (book.read = true) : (book.read = false)
   return book
 }
 
-let addBookToLibrary = function(library, formData){
+let addBookToLibrary = function(library, formData) {
   let book = createBookObject(formData)
   library.push(book)
   return library
 }
 
-let removeBookWithIndex = function(index){
+let removeBookWithIndex = function(index) {
   let myLibrary = getLibraryFromStorage()
   let book = document.querySelector(`tr[data-book-index='${index}']`)
   book.parentNode.removeChild(book)
-  myLibrary.splice(index,1)
+  myLibrary.splice(index, 1)
   saveLibraryToStorage(myLibrary)
   renderFromStorage()
 }
 
-let getBookFromFormData = function(formData){
+let getBookFromFormData = function(formData) {
   let bookData = {}
-  for (let pair of formData.entries()){
+  for (let pair of formData.entries()) {
     bookData[pair[0]] = pair[1]
   }
   return bookData
 }
 
-let getLibraryFromStorage = function(){
-  if (localStorage.getItem('myLibrary') === null){
+let getLibraryFromStorage = function() {
+  if (localStorage.getItem("myLibrary") === null) {
     return []
   }
-  rawLibrary = JSON.parse(localStorage.getItem('myLibrary'))
-  return rawLibrary.map((book) => {
+  rawLibrary = JSON.parse(localStorage.getItem("myLibrary"))
+  return rawLibrary.map(book => {
     return new Book(book)
   })
 }
 
-let saveLibraryToStorage = function(library){
-  localStorage.setItem('myLibrary', JSON.stringify(library))
+let saveLibraryToStorage = function(library) {
+  localStorage.setItem("myLibrary", JSON.stringify(library))
 }
 
-let appendChildTo = function(selector, element){
+let appendChildTo = function(selector, element) {
   document.querySelector(selector).appendChild(element)
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   renderFromStorage()
-  let newBook = document.querySelector('#new-book')
+  let newBook = document.querySelector("#new-book")
   newBook.onclick = createForm
-  let closeForm = document.querySelector('#close-form')
+  let closeForm = document.querySelector("#close-form")
   closeForm.onclick = removeForm
 })
