@@ -90,15 +90,24 @@ let newBookForm = function() {
   return `
 <div class="form-group">
   <label for="title">Title</label>
-  <input type="text" id="title" name="title" class="form-control" required>
+  <input type="text" id="title" name="title" class="form-control" minlength='3' required>
+  <div class="invalid-feedback">
+    Title must be longer than three letters!
+  </div>
 </div>
 <div class="form-group">
   <label for="author">Author</label>
-  <input type="text" id="author" name="author" class="form-control" required>
+  <input type="text" id="author" name="author" class="form-control" minlength="3" required>
+  <div class="invalid-feedback">
+    Author must be longer than three letters!
+  </div>
 </div>
 <div class="form-group">
   <label for="pages">Number of pages</label>
   <input type="number" id="pages" name="pages" class="form-control" required>
+  <div class="invalid-feedback">
+    Please enter a number!
+  </div>
 </div>
 <div class="form-group form-check"">
   <input type="checkbox" id="read" name="read" class="form-check-input">
@@ -113,12 +122,48 @@ let createForm = function() {
     return
   }
   let form = document.createElement("form")
+  form.noValidate = true
   form.name = "myForm"
   form.innerHTML = newBookForm()
   appendChildTo(".container", form)
   document.querySelector("#submit-btn").addEventListener("click", event => {})
+
   form.addEventListener("submit", event => {
-    submitForm()
+    let title = document.querySelector("#title")
+    let titleError = document.querySelector("#title + .invalid-feedback")
+    let author = document.querySelector("#author")
+    let authorError = document.querySelector("#author + .invalid-feedback")
+    let pages = document.querySelector("#pages")
+    let pagesError = document.querySelector("#pages + .invalid-feedback")
+    title.addEventListener("input", () => {
+      if (title.validity.valid) {
+        titleError.classList.remove("active")
+      }
+    })
+    author.addEventListener("input", () => {
+      if (author.validity.valid) {
+        authorError.classList.remove("active")
+      }
+    })
+    pages.addEventListener("input", () => {
+      if (pages.validity.valid) {
+        pagesError.classList.remove("active")
+      }
+    })
+    if (form.checkValidity()) {
+      submitForm()
+      form.reset()
+    } else {
+      if (!title.validity.valid) {
+        titleError.classList.toggle("active")
+      }
+      if (!author.validity.valid) {
+        authorError.classList.toggle("active")
+      }
+      if (!pages.validity.valid) {
+        pagesError.classList.toggle("active")
+      }
+    }
     event.preventDefault()
   })
 }
