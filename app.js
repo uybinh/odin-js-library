@@ -116,12 +116,7 @@ let createForm = function() {
   form.name = "myForm"
   form.innerHTML = newBookForm()
   appendChildTo(".container", form)
-  document.querySelector("#submit-btn").addEventListener("click", event => {
-    // if (validateForm(form)) {
-    //   submitForm()
-    // }
-    // form.reset()
-  })
+  document.querySelector("#submit-btn").addEventListener("click", event => {})
   form.addEventListener("submit", event => {
     submitForm()
     event.preventDefault()
@@ -152,6 +147,7 @@ let validateForm = function(form) {
     return true
   }
 }
+
 let removeForm = function() {
   form = document.querySelector("form")
   form.parentNode.removeChild(form)
